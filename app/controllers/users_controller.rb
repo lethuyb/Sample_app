@@ -4,8 +4,6 @@ before_action :correct_user, only: [:edit, :update]
 before_action :admin_user, only: :destroy
 
 
-
-
 def destroy
   User.find(params[:id]).destroy
   flash[:success] = "User deleted"
@@ -14,11 +12,12 @@ end
 
 
   def index
-    @users = User.paginate(page: params[:page], per_page: 5)
+     @users = User.paginate(page: params[:page], per_page: 10)
   end
 
 	def show
 		@user = User.find(params[:id])
+   
 	end
 		
 	
@@ -29,7 +28,7 @@ end
   def create
   	@user = User.new(user_params) 
   	if @user.save
-      UserMailer.acount_activvation(@user).deliver_now
+      @user.send_activation_email
   		flash[:info] = "Please check your email to activate your account."
   		redirect_to root_url
   	else
